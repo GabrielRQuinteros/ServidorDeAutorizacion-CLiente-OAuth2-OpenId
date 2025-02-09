@@ -1,0 +1,42 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        # Indico que el servidor de Autenticación me va a enviar un token JWT para autenticarme.
+        jwt:
+          # Es la URI del servidor de autorización
+          # Servidor de autenticación EJ: El Servidor de Google si se intenta hacer login con google para acceder a drive. Es el que genera el token de acceso.
+          issuer-uri: "http://127.0.0.1:9000"
+      client:
+        registration:
+          # Es el Nombre de la aplicación
+          client-app:
+            provider: spring
+            # Es el client id que tenemos en el servidor de autorización
+            client-id: client-app
+            # Es el client secret que tenemos en el servidor de autorización
+            client-secret: 1234
+            # Es el flujo de autorización configurado en el servidor de autorización
+            # Viene de aca --> authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            authorization-grant-type: authorization_code
+            # La url en la cual se recibe el código de autorización.
+            # Es un endpoint en el controlador que creamos en nuestra aplicación.
+            # En este caso 127.0.0.1 es la IP local, porque no soporta escribir localhost.
+            # En el server está configurado aca:
+            # .redirectUri("http://127.0.0.1:8080/authorized")
+            redirect-uri: "http://127.0.0.1:8080/authorized"
+
+            # Roles para autenticarse en la aplicación
+            scope:
+              - openid
+              - profile
+              - read
+              - write
+            # Nombre de la aplicación cliente
+            # ... Osea ... la que pide recursos a otra app
+            client-name: client-app
+
+        provider:
+          spring:
+            # Es la URL del servidor de autorización. Recordá que lo montamos en el puerto 9000
+            issuer-uri: "http://127.0.0.1:9000"
